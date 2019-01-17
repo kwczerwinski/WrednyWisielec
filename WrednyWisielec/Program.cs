@@ -69,7 +69,7 @@ namespace WrednyWisielec
                 //3. Jeśli ilość słów > 0 i ilość prób gracza > 0 to,
                 //3.1. Wprowadź literę do tablicy liter
                 //3.2. Obniż ilość prób gracza o 1
-                //3.3. Jeśli ilość prób gracza = 0, idź do 12.
+                //3.3. Jeśli ilość prób gracza = 0, idź do 11.
                 
                 int check = -1;
                 for (int i = 0; i < tmp.Length; i++)
@@ -113,46 +113,86 @@ namespace WrednyWisielec
                     }
                 }
                 //3.4. Wróć do punktu 1
-
-
-
-
-
+                for (int i = 0; i < litery.Length; i++)
+                {
+                    if (litery[i] == null)
+                    {
+                        litery[i] = litera;
+                        break;
+                    }
+                }
             }
 
-            while(koniec == false)
+            //5. Wypisz pozycje liter odgadniętych przez gracza.
+            for (int i = 0; i < wybraneSlowo.Length; i++)
             {
-                //5. Wypisz pozycje ostatniej litery wybranej przez gracza.
-
-                //6. Jeśli ilość prób gracza = 0, idź do 12.
-
-                //7. Wybór litery przez gracza.
-
-                //8. Jeśli litera jest w danym słowie:
-
-                //8.1. Wypisz pozycje litery w danym słowie
-
-                //8.2. Jeśli słowo zostało odkryte, idź do 13.
-
-                //8.3. Wróć do 7.
-
-                //9. Obniż ilość prób gracza o 1.
-
-                //10. Jeśli ilość prób gracza = 0. idź do 12.
-
-                //11. Wróć do 7.
+                for (int j = 0; j < litery.Length; j++)
+                {
+                    if (wybraneSlowo[i].Equals(litery[j][0]))
+                    {
+                        Console.WriteLine(wybraneSlowo[i]);
+                        break;
+                    }
+                    if (j == litery.Length - 1)
+                    {
+                        Console.WriteLine("_");
+                    }
+                }
             }
 
-            //12. Wypis przegranej gracza.
+            while (koniec == false)
+            {
+                //6. Wybór litery przez gracza.
+                do
+                {
+                    Console.WriteLine("Podaj literę: ");
+                    litera = Console.ReadLine().ToLower();
+                } while (litera.Length > 1);
+
+                //7. Jeśli litera jest w danym słowie:
+                if (wybraneSlowo.Contains(litera))
+                {
+                    //7.1. Wypisz pozycje litery w danym słowie
+                    for (int i = 0; i < wybraneSlowo.Length; i++)
+                    {
+                        for (int j = 0; j < litery.Length; j++)
+                        {
+                            if (wybraneSlowo[i].Equals(litery[j][0]))
+                            {
+                                Console.WriteLine(wybraneSlowo[i]);
+                                break;
+                            }
+                            if (j == litery.Length - 1)
+                            {
+                                Console.WriteLine("_");
+                            }
+                        }
+                    }
+                    //7.2. Jeśli słowo zostało odkryte, idź do 12.
+
+                }
+                else
+                {
+                    //8. Obniż ilość prób gracza o 1.
+                    //9. Jeśli ilość prób gracza = 0. idź do 11.
+                    if(--iloscProb == 0)
+                    {
+                        koniec = true;
+                    }
+                }
+                //10. Wróć do 6.
+            }
+
+            //11. Wypis przegranej gracza.
             if (wygrana == false)
             {
-                Console.WriteLine("Niestety Wredny Wisielec cię pokonał.")
+                Console.WriteLine("Niestety Wredny Wisielec cię pokonał.");
             }
 
-            //13. Wypis wygranej gracza.
+            //12. Wypis wygranej gracza.
             else
             {
-                Console.WriteLine("Gratulacje w pokonaniu gry!")
+                Console.WriteLine("Gratulacje w pokonaniu gry!");
             }
         }
         
