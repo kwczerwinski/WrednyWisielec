@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace WrednyWisielec
 {
@@ -14,13 +11,51 @@ namespace WrednyWisielec
             //Wyższa Szkoła Bankowa w Gdańsku, kierunek Informatyka, semestr I
             //Wykonanie: Krzysztof Czerwinski
 
+            //Informacje wstępne
+            Console.WriteLine("Witaj w grze Wredny Wisielec!\n\nZasady gry:\n1. Podajesz literę\n 2. Jeśli litera istnieje w słowie to zostaje ona wypisana 3. Jeśli litera nie istnieje w słowie to tracisz życie 4. Wygrywasz jeśli odgadniesz wszystkie litery słowa 5. Przegrywasz jeśli stracisz wszystkie życia\n\nZrozumiałeś? No to zaczynajmy!\n");
+
             //Wczytanie słów w pliku tekstowego do tablicy
+            string[] slowa = File.ReadAllLines("slowa.txt");
+
+            //Zmienna przechowująca ilość prób gracza
+            int iloscProb = 20;
+
+            //Tablica liter wybranych przez gracza
+            char[] litery = new char[iloscProb];
+
+            //Zmienna chwilowo przechowująca wybraną literę gracza, potrzebna do wykonywania operacji sprawdzania wartości wciśniętego klawisza
+            string litera;
 
             //Pętla z grą
 
             //1. Wybór litery przez gracza
+            do
+            {
+                Console.WriteLine("Podaj literę: ");
+                litera = Console.ReadLine().ToLower();
+            } while (litera.Length > 1);
 
             //2. Weryfikacja ilości słów nie zawierających wybranych liter
+            int[] pozycje = null;
+            for (int i = 0; i < slowa.Length; i++)
+            {
+                if (slowa[i].Contains(litera.ToString()))
+                {
+                    if (pozycje == null)
+                    {
+                        pozycje = new int[1];
+                        pozycje[0] = i;
+                    }
+                    int[] tmp = pozycje;
+                    pozycje = new int[tmp.Length + 1];
+                    for(int j = 0; j < tmp.Length; j++)
+                    {
+                        pozycje[i] = tmp[i];
+                    }
+                    pozycje[pozycje.Length - 1] = i;
+                }
+            }
+            
 
             //3. Jeśli ilość słów > 0 i ilość prób gracza > 0 to,
 
