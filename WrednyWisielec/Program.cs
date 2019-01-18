@@ -50,7 +50,7 @@ namespace WrednyWisielec
                 {
                     Console.WriteLine("Podaj literę: ");
                     litera = Console.ReadLine().ToLower();
-                } while (litera.Length > 1);
+                } while (litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
                 //2. Weryfikacja słów nie zawierających wybranych liter
                 bool[] tmp = pozycje;
@@ -147,7 +147,7 @@ namespace WrednyWisielec
                 {
                     Console.WriteLine("Podaj literę: ");
                     litera = Console.ReadLine().ToLower();
-                } while (litera.Length > 1);
+                } while (litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
                 //7. Jeśli litera jest w danym słowie:
                 if (wybraneSlowo.Contains(litera))
