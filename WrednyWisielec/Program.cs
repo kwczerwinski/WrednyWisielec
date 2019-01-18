@@ -91,7 +91,7 @@ namespace WrednyWisielec
                         }
                         break;
                     }
-                    if (i == tmp.Length)
+                    if (i == tmp.Length - 1)
                     {
                         //4. Losuj słowo, które nie zawiera liter z tablicy liter.
                         if (check != -1)
