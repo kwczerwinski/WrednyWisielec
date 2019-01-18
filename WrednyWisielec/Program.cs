@@ -25,7 +25,7 @@ namespace WrednyWisielec
             }
 
             //Zmienne przechowujące stan gry
-            int iloscProb = 20; //ilość prób gracza
+            int iloscProb = 1000000; //ilość prób gracza
             bool koniec = false; //stan konca gry
             bool wygrana = false; //stan wygranej gracza
 
@@ -43,17 +43,19 @@ namespace WrednyWisielec
             string wybraneSlowo = null;
 
             //Pętla z grą
-            while(koniec == false)
+            int check = -1;
+            while (koniec == false)
             {
                 //1. Wybór litery przez gracza
                 do
                 {
                     Console.WriteLine("Podaj literę: ");
                     litera = Console.ReadLine().ToLower();
-                } while (litera.Length > 1 || !(Char.IsLetter(litera, 0)));
+                } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
                 //2. Weryfikacja słów nie zawierających wybranych liter
-                bool[] tmp = pozycje;
+                bool[] tmp = new bool[slowa.Length];
+                Array.Copy(pozycje, tmp, pozycje.Length);
                 for (int i = 0; i < slowa.Length; i++)
                 {
                     if (tmp[i] == false)
@@ -70,46 +72,40 @@ namespace WrednyWisielec
                 //3.1. Wprowadź literę do tablicy liter
                 //3.2. Obniż ilość prób gracza o 1
                 //3.3. Jeśli ilość prób gracza = 0, idź do 11.
-                
-                int check = -1;
+
                 for (int i = 0; i < tmp.Length; i++)
                 {
                     if (tmp[i] == false)
                     {
+                        if (i == tmp.Length - 1)
+                        {
+                            //4. Losuj słowo, które nie zawiera liter z tablicy liter.
+                            int losowaPozycja;
+                            while (wybraneSlowo == null)
+                            {
+                                losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycje.Length);
+                                if (pozycje[losowaPozycja] == true)
+                                {
+                                    wybraneSlowo = slowa[losowaPozycja];
+                                }
+                            }
+                            break;
+                        }
                         continue;
                     }
                     else if (check == -1)
                     {
                         check = i;
+                        continue;
                     }
                     else if (check != -1)
                     {
-                        pozycje = tmp;
-                        if(--iloscProb == 0)
+                        Array.Copy(tmp, pozycje, pozycje.Length);
+                        if (--iloscProb == 0)
                         {
                             koniec = true;
                         }
                         break;
-                    }
-                    if (i == tmp.Length - 1)
-                    {
-                        //4. Losuj słowo, które nie zawiera liter z tablicy liter.
-                        if (check != -1)
-                        {
-                            wybraneSlowo = slowa[check];
-                        }
-                        else
-                        {
-                            int losowaPozycja;
-                            while (wybraneSlowo == null)
-                            {
-                                losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycje.Length);
-                                if (pozycje[losowaPozycja] != false)
-                                {
-                                    wybraneSlowo = slowa[losowaPozycja];
-                                }
-                            }
-                        }
                     }
                 }
                 //3.4. Wróć do punktu 1
@@ -120,6 +116,11 @@ namespace WrednyWisielec
                         litery[i] = litera;
                         break;
                     }
+                }
+
+                if (wybraneSlowo != null)
+                {
+                    break;
                 }
             }
 
@@ -147,7 +148,7 @@ namespace WrednyWisielec
                 {
                     Console.WriteLine("Podaj literę: ");
                     litera = Console.ReadLine().ToLower();
-                } while (litera.Length > 1 || !(Char.IsLetter(litera, 0)));
+                } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
                 //7. Jeśli litera jest w danym słowie:
                 if (wybraneSlowo.Contains(litera))

@@ -43,6 +43,7 @@ namespace testy
             string wybraneSlowo = null;
 
             //Pętla z grą
+            int check = -1;
             while (koniec == false)
             {
                 wypis(slowa, pozycje, litery);
@@ -52,10 +53,11 @@ namespace testy
                 {
                     Console.WriteLine("Podaj literę: ");
                     litera = Console.ReadLine().ToLower();
-                } while (litera.Length > 1 || !(Char.IsLetter(litera, 0)));
+                } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
                 //2. Weryfikacja słów nie zawierających wybranych liter
-                bool[] tmp = pozycje;
+                bool[] tmp = new bool[slowa.Length];
+                Array.Copy(pozycje, tmp, pozycje.Length);
                 for (int i = 0; i < slowa.Length; i++)
                 {
                     if (tmp[i] == false)
@@ -73,11 +75,24 @@ namespace testy
                 //3.2. Obniż ilość prób gracza o 1
                 //3.3. Jeśli ilość prób gracza = 0, idź do 11.
 
-                int check = -1;
                 for (int i = 0; i < tmp.Length; i++)
                 {
                     if (tmp[i] == false)
                     {
+                        if (i == tmp.Length - 1)
+                        {
+                            //4. Losuj słowo, które nie zawiera liter z tablicy liter.
+                            int losowaPozycja;
+                            while (wybraneSlowo == null)
+                            {
+                                losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycje.Length);
+                                if (pozycje[losowaPozycja] == true)
+                                {
+                                    wybraneSlowo = slowa[losowaPozycja];
+                                }
+                            }
+                            break;
+                        }
                         continue;
                     }
                     else if (check == -1)
@@ -87,32 +102,12 @@ namespace testy
                     }
                     else if (check != -1)
                     {
-                        pozycje = tmp;
+                        Array.Copy(tmp, pozycje, pozycje.Length);
                         if (--iloscProb == 0)
                         {
                             koniec = true;
                         }
                         break;
-                    }
-                    if (i == tmp.Length - 1)
-                    {
-                        //4. Losuj słowo, które nie zawiera liter z tablicy liter.
-                        if (check != -1)
-                        {
-                            wybraneSlowo = slowa[check];
-                        }
-                        else
-                        {
-                            int losowaPozycja;
-                            while (wybraneSlowo == null)
-                            {
-                                losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycje.Length);
-                                if (pozycje[losowaPozycja] != false)
-                                {
-                                    wybraneSlowo = slowa[losowaPozycja];
-                                }
-                            }
-                        }
                     }
                 }
                 //3.4. Wróć do punktu 1
@@ -124,7 +119,15 @@ namespace testy
                         break;
                     }
                 }
+
+                if(wybraneSlowo != null)
+                {
+                    break;
+                }
             }
+
+            Console.WriteLine(wybraneSlowo);
+            Console.ReadKey();
         }
 
         static void wypis(string[] s, bool[] p, string[] l)
