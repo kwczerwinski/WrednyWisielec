@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace testy
 {
@@ -10,18 +7,21 @@ namespace testy
     {
         static void Main(string[] args)
         {
-            string[] slowa = { "aaa", "bbb", "ccc" };
-            string[] tmp = slowa;
-            int i = 1;
-            slowa = new string[tmp.Length - 1];
-            for (int j = 0; j < i; j++)
+            Console.WriteLine("Witaj w grze Wredny Wisielec!\n\nZasady gry:\n1. Podajesz literę\n2. Jeśli litera istnieje w słowie to zostaje ona wypisana\n3. Jeśli litera nie istnieje w słowie to tracisz życie\n4. Wygrywasz jeśli odgadniesz wszystkie litery słowa\n5. Przegrywasz jeśli stracisz wszystkie życia\n\nZrozumiałeś? No to zaczynajmy!\n");
+
+            //Wczytanie słów w pliku tekstowego do tablicy
+            string[] slowa = File.ReadAllLines("../../slowa.txt");
+
+            //Tablica przechowująca, które słowa zostały wyeliminowane z gry
+            bool[] pozycje = new bool[slowa.Length];
+            for (int i = 0; i < pozycje.Length; i++)
             {
-                slowa[j] = tmp[j];
+                pozycje[i] = true;
             }
-            for(int j = i+1)
-            foreach (string a in slowa)
+
+            for(int i = 0; i < 10; i++)
             {
-                Console.WriteLine(a);
+                Console.WriteLine("{0} {1}", slowa[i], pozycje[i]);
             }
         }
     }
