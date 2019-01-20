@@ -12,7 +12,7 @@ namespace WrednyWisielec
             //Wykonanie: Krzysztof Czerwinski
 
             //Informacje wstępne
-            Console.Write("Witaj w grze Wredny Wisielec!\n\nZasady gry:\n1. Podajesz literę\n2. Jeśli litera istnieje w słowie to zostaje ona wypisana\n3. Jeśli litera nie istnieje w słowie to tracisz życie\n4. Wygrywasz jeśli odgadniesz wszystkie litery słowa\n5. Przegrywasz jeśli stracisz wszystkie życia\n\nZrozumiałeś? No to zaczynajmy!");
+            Console.Write("Witaj w grze Wredny Wisielec!\n\nZasady gry:\n1. Podajesz literę\n2. Jeśli litera istnieje w słowie to zostaje ona wypisana\n3. Jeśli litera nie istnieje w słowie to tracisz życie\n4. Wygrywasz jeśli odgadniesz wszystkie litery słowa\n5. Przegrywasz jeśli stracisz wszystkie życia\n\nZrozumiałeś? No to zaczynajmy!\n");
 
             //Losowanie długości słowa i wczytanie słów z odpowiedniego pliku tekstowego do tablicy
             string path = "../../s" + new Random((int)DateTime.Now.Ticks).Next(2, 15) + ".txt";
@@ -40,7 +40,7 @@ namespace WrednyWisielec
             while (koniec == false)
             {
                 //Wypisanie ile gracz posiada prób
-                Console.Write("\n\nIlość żyć: {0}", iloscProb);
+                Console.Write("\nIlość żyć: {0}", iloscProb);
 
                 //Wypisanie użytych liter w grze
                 Console.Write("\nLitery: ");
@@ -178,7 +178,6 @@ namespace WrednyWisielec
                             }
                         }
                     }
-                    Console.WriteLine();
 
                     //Sprawdzenie czy gracz odgadł wszystkie litery
                     if (wszystkoOdgadnięte == true)
@@ -215,18 +214,19 @@ namespace WrednyWisielec
                         }
                     }
                 } //koniec II etapu
-            } //koniec gry
+            } //koniec gry         
 
             //Wypis przegranej gracza.
             if (wygrana == false)
             {
-                Console.WriteLine("\nNiestety Wredny Wisielec cię pokonał.");
+                Console.Write("Czyżbyś nie znał(a) słowa \"{0}\"?", wybraneSlowo);
+                Console.Write("\nNiestety Wredny Wisielec cię pokonał.");
             }
 
             //Wypis wygranej gracza.
             else
             {
-                Console.WriteLine("\nGratulacje w pokonaniu gry!");
+                Console.Write("\nGratulacje w pokonaniu gry!");
             }
 
             Console.ReadKey();
