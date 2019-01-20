@@ -17,185 +17,216 @@ namespace WrednyWisielec
             //Wczytanie słów w pliku tekstowego do tablicy
             string[] slowa = File.ReadAllLines("../../slowa.txt");
 
-            //Tablica przechowująca, które słowa zostały wyeliminowane z gry
-            bool[] pozycje = new bool[slowa.Length];
-            for(int i=0; i < pozycje.Length; i++)
-            {
-                pozycje[i] = true;
-            }
+            //Tablice przechowujące, które słowa zostały wyeliminowane z gry
+            bool[] pozycjeWcześniejsze = new bool[slowa.Length];
+            bool[] pozycjeObecne = new bool[slowa.Length];
 
             //Zmienne przechowujące stan gry
-            int iloscProb = 1000000; //ilość prób gracza
+            int iloscProb = 2; //ilość prób gracza
             bool koniec = false; //stan konca gry
             bool wygrana = false; //stan wygranej gracza
 
             //Tablica liter wybranych przez gracza
-            string[] litery = new string[iloscProb];
-            for (int i = 0; i < litery.Length; i++)
-            {
-                litery[i] = null;
-            }
+            string[] litery = new string[34];
 
             //Zmienna chwilowo przechowująca wybraną literę gracza, potrzebna do wykonywania operacji sprawdzania wartości wciśniętego klawisza
             string litera;
 
             //Zmienna przechowująca słowo wybrane przez program do drugiego etapu gry
-            string wybraneSlowo = null;
+            string wybraneSlowo = string.Empty;
 
             //Pętla z grą
-            int check = -1;
             while (koniec == false)
             {
-                //1. Wybór litery przez gracza
-                do
+                //Sprawdzenie etapu rozgrywki
+                if (wybraneSlowo.Equals(string.Empty)) //I etap
                 {
-                    Console.WriteLine("Podaj literę: ");
-                    litera = Console.ReadLine().ToLower();
-                } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
+                    //Wypisanie ile gracz posiada prób
+                    Console.WriteLine("Ilość żyć: {0}", iloscProb);
 
-                //2. Weryfikacja słów nie zawierających wybranych liter
-                bool[] tmp = new bool[slowa.Length];
-                Array.Copy(pozycje, tmp, pozycje.Length);
-                for (int i = 0; i < slowa.Length; i++)
-                {
-                    if (tmp[i] == false)
+                    //Wybór litery przez gracza
+                    do
                     {
-                        continue;
-                    }
-                    if (slowa[i].Contains(litera))
-                    {
-                        tmp[i] = false;
-                    }
-                }
+                        Console.Write("\nPodaj literę: ");
+                        litera = Console.ReadLine().ToLower();
+                    } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
-                //3. Jeśli ilość słów > 0 i ilość prób gracza > 0 to,
-                //3.1. Wprowadź literę do tablicy liter
-                //3.2. Obniż ilość prób gracza o 1
-                //3.3. Jeśli ilość prób gracza = 0, idź do 11.
-
-                for (int i = 0; i < tmp.Length; i++)
-                {
-                    if (tmp[i] == false)
+                    //Wprowadzenie litery do tablicy liter
+                    for (int i = 0; i < litery.Length; i++)
                     {
-                        if (i == tmp.Length - 1)
+                        if (litery[i] == null)
                         {
-                            //4. Losuj słowo, które nie zawiera liter z tablicy liter.
-                            int losowaPozycja;
-                            while (wybraneSlowo == null)
-                            {
-                                losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycje.Length);
-                                if (pozycje[losowaPozycja] == true)
-                                {
-                                    wybraneSlowo = slowa[losowaPozycja];
-                                }
-                            }
+                            litery[i] = litera;
                             break;
                         }
-                        continue;
                     }
-                    else if (check == -1)
+
+                    //Weryfikacja słów nie zawierających wybranej litery
+                    for (int i = 0; i < slowa.Length; i++)
                     {
-                        check = i;
-                        continue;
+                        if (slowa[i].Contains(litera))
+                        {
+                            pozycjeObecne[i] = true;
+                        }
                     }
-                    else if (check != -1)
+
+                    //Sprawdzenie ilości pozostałych słów
+                    int iloscSlow = 0;
+                    for (int i = 0; i < slowa.Length; i++)
                     {
-                        Array.Copy(tmp, pozycje, pozycje.Length);
+                        if (pozycjeObecne[i] == false)
+                        {
+                            iloscSlow++;
+                        }
+                    }
+
+                    //Wybranie kontunuacji gry
+                    if (iloscSlow > 1) //Więcej niż jedno słowo spełniające warunek
+                    {
+                        //Zapisanie obecnego stanu gry jako poprzedniego stanu
+                        Array.Copy(pozycjeObecne, pozycjeWcześniejsze, pozycjeObecne.Length);
+
+                        //Wypisanie użytych liter w grze
+                        Console.Write("\nLitery: ");
+                        for (int i = 0; i < litery.Length; i++)
+                        {
+                            if (litery[i] != null)
+                            {
+                                Console.Write("{0} ", litery[i]);
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                break;
+                            }
+                        }
+
+                        //Sprawdzenie ilości pozostałych prób gracza
                         if (--iloscProb == 0)
                         {
                             koniec = true;
                         }
-                        break;
                     }
-                }
-                //3.4. Wróć do punktu 1
-                for (int i = 0; i < litery.Length; i++)
-                {
-                    if (litery[i] == null)
+                    else if (iloscSlow == 1) //Jedno słowo spełniające warunek
                     {
-                        litery[i] = litera;
-                        break;
+                        //Wybranie tego słowa do dalszej części gry
+                        for (int i = 0; i < slowa.Length; i++)
+                        {
+                            if (pozycjeObecne[i] == false)
+                            {
+                                wybraneSlowo = slowa[i];
+                                break;
+                            }
+                        }
                     }
-                }
-
-                if (wybraneSlowo != null)
-                {
-                    break;
-                }
-            }
-
-            //5. Wypisz pozycje liter odgadniętych przez gracza.
-            for (int i = 0; i < wybraneSlowo.Length; i++)
-            {
-                for (int j = 0; j < litery.Length; j++)
-                {
-                    if (wybraneSlowo[i].Equals(litery[j][0]))
+                    else //Brak słów spełniających warunek
                     {
-                        Console.WriteLine(wybraneSlowo[i]);
-                        break;
+                        //Losowanie słowa do dalszej części gry
+                        int losowaPozycja;
+                        while (wybraneSlowo.Equals(string.Empty))
+                        {
+                            losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycjeObecne.Length);
+                            if (pozycjeObecne[losowaPozycja] == true)
+                            {
+                                wybraneSlowo = slowa[losowaPozycja];
+                            }
+                        }
                     }
-                    if (j == litery.Length - 1)
+                } //koniec I etapu
+                else //II etap
+                {
+                    //Wypisanie ile gracz posiada prób
+                    Console.Write("\nIlość żyć: {0}", iloscProb);
+
+                    //Wypisanie użytych liter w grze
+                    Console.Write("\nLitery: ");
+                    for (int i = 0; i < litery.Length; i++)
                     {
-                        Console.WriteLine("_");
+                        if (litery[i] != null)
+                        {
+                            Console.Write("{0} ", litery[i]);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            break;
+                        }
                     }
-                }
-            }
 
-            while (koniec == false)
-            {
-                //6. Wybór litery przez gracza.
-                do
-                {
-                    Console.WriteLine("Podaj literę: ");
-                    litera = Console.ReadLine().ToLower();
-                } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
-
-                //7. Jeśli litera jest w danym słowie:
-                if (wybraneSlowo.Contains(litera))
-                {
-                    //7.1. Wypisz pozycje litery w danym słowie
+                    //Wypisanie liter odgadniętych przez gracza w słowie
+                    Console.Write("Słowo: ");
+                    bool wszystkoOdgadnięte = true;
                     for (int i = 0; i < wybraneSlowo.Length; i++)
                     {
                         for (int j = 0; j < litery.Length; j++)
                         {
-                            if (wybraneSlowo[i].Equals(litery[j][0]))
+
+                            if (litery[j] == null)
                             {
-                                Console.WriteLine(wybraneSlowo[i]);
+                                Console.Write("_ ");
+                                wszystkoOdgadnięte = false;
                                 break;
                             }
-                            if (j == litery.Length - 1)
+                            if (wybraneSlowo[i].Equals(litery[j][0]))
                             {
-                                Console.WriteLine("_");
+                                Console.Write("{0} ", litery[j]);
+                                break;
                             }
                         }
                     }
-                    //7.2. Jeśli słowo zostało odkryte, idź do 12.
-                    
-                }
-                else
-                {
-                    //8. Obniż ilość prób gracza o 1.
-                    //9. Jeśli ilość prób gracza = 0. idź do 11.
-                    if(--iloscProb == 0)
+                    Console.WriteLine();
+
+                    //Sprawdzenie czy gracz odgadł wszystkie litery
+                    if (wszystkoOdgadnięte == true)
                     {
+                        wygrana = true;
                         koniec = true;
                     }
-                }
-                //10. Wróć do 6.
-            }
+                    else
+                    {
+                        //Wybór litery przez gracza
+                        do
+                        {
+                            Console.Write("\nPodaj literę: ");
+                            litera = Console.ReadLine().ToLower();
+                        } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
-            //11. Wypis przegranej gracza.
+                        //Wprowadzenie litery do tablicy liter
+                        for (int i = 0; i < litery.Length; i++)
+                        {
+                            if (litery[i] == null)
+                            {
+                                litery[i] = litera;
+                                break;
+                            }
+                        }
+
+                        //Sprawdzenie czy litera zawiera się w słowie
+                        if (!(wybraneSlowo.Contains(litera)))
+                        {
+                            if (--iloscProb == 0)
+                            {
+                                koniec = true;
+                            }
+                        }
+                    }
+                } //koniec II etapu
+            } //koniec gry
+
+            //Wypis przegranej gracza.
             if (wygrana == false)
             {
-                Console.WriteLine("Niestety Wredny Wisielec cię pokonał.");
+                Console.WriteLine("\nNiestety Wredny Wisielec cię pokonał.");
             }
 
-            //12. Wypis wygranej gracza.
+            //Wypis wygranej gracza.
             else
             {
-                Console.WriteLine("Gratulacje w pokonaniu gry!");
+                Console.WriteLine("\nGratulacje w pokonaniu gry!");
             }
-        }
-        
-    }
+
+            Console.ReadKey();
+
+        } //Main End
+    } //Class End
 }
