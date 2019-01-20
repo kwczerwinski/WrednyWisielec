@@ -50,7 +50,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="slowa.txt" />
+    <Content Include="s10.txt" />
+    <Content Include="s11.txt" />
+    <Content Include="s12.txt" />
+    <Content Include="s13.txt" />
+    <Content Include="s14.txt" />
+    <Content Include="s2.txt" />
+    <Content Include="s3.txt" />
+    <Content Include="s4.txt" />
+    <Content Include="s5.txt" />
+    <Content Include="s6.txt" />
+    <Content Include="s7.txt" />
+    <Content Include="s8.txt" />
+    <Content Include="s9.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

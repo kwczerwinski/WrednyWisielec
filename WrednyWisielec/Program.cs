@@ -12,17 +12,18 @@ namespace WrednyWisielec
             //Wykonanie: Krzysztof Czerwinski
 
             //Informacje wstępne
-            Console.WriteLine("Witaj w grze Wredny Wisielec!\n\nZasady gry:\n1. Podajesz literę\n2. Jeśli litera istnieje w słowie to zostaje ona wypisana\n3. Jeśli litera nie istnieje w słowie to tracisz życie\n4. Wygrywasz jeśli odgadniesz wszystkie litery słowa\n5. Przegrywasz jeśli stracisz wszystkie życia\n\nZrozumiałeś? No to zaczynajmy!\n");
+            Console.Write("Witaj w grze Wredny Wisielec!\n\nZasady gry:\n1. Podajesz literę\n2. Jeśli litera istnieje w słowie to zostaje ona wypisana\n3. Jeśli litera nie istnieje w słowie to tracisz życie\n4. Wygrywasz jeśli odgadniesz wszystkie litery słowa\n5. Przegrywasz jeśli stracisz wszystkie życia\n\nZrozumiałeś? No to zaczynajmy!");
 
-            //Wczytanie słów w pliku tekstowego do tablicy
-            string[] slowa = File.ReadAllLines("../../slowa.txt");
+            //Losowanie długości słowa i wczytanie słów z odpowiedniego pliku tekstowego do tablicy
+            string path = "../../s" + new Random((int)DateTime.Now.Ticks).Next(2, 15) + ".txt";
+            string[] slowa = File.ReadAllLines(path);
 
             //Tablice przechowujące, które słowa zostały wyeliminowane z gry
             bool[] pozycjeWcześniejsze = new bool[slowa.Length];
             bool[] pozycjeObecne = new bool[slowa.Length];
 
             //Zmienne przechowujące stan gry
-            int iloscProb = 2; //ilość prób gracza
+            int iloscProb = 15; //ilość prób gracza
             bool koniec = false; //stan konca gry
             bool wygrana = false; //stan wygranej gracza
 
@@ -38,16 +39,37 @@ namespace WrednyWisielec
             //Pętla z grą
             while (koniec == false)
             {
+                //Wypisanie ile gracz posiada prób
+                Console.Write("\n\nIlość żyć: {0}", iloscProb);
+
+                //Wypisanie użytych liter w grze
+                Console.Write("\nLitery: ");
+                for (int i = 0; i < litery.Length; i++)
+                {
+                    if (litery[i] != null)
+                    {
+                        Console.Write("{0} ", litery[i]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
                 //Sprawdzenie etapu rozgrywki
                 if (wybraneSlowo.Equals(string.Empty)) //I etap
                 {
-                    //Wypisanie ile gracz posiada prób
-                    Console.WriteLine("Ilość żyć: {0}", iloscProb);
+                    //Zmyłka dla gracza
+                    Console.Write("\nSłowo: ");
+                    for (int i = 0; i < slowa[0].Length; i++)
+                    {
+                        Console.Write("_ ");
+                    }
 
                     //Wybór litery przez gracza
                     do
                     {
-                        Console.Write("\nPodaj literę: ");
+                        Console.Write("\n\nPodaj literę: ");
                         litera = Console.ReadLine().ToLower();
                     } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
@@ -85,22 +107,7 @@ namespace WrednyWisielec
                     {
                         //Zapisanie obecnego stanu gry jako poprzedniego stanu
                         Array.Copy(pozycjeObecne, pozycjeWcześniejsze, pozycjeObecne.Length);
-
-                        //Wypisanie użytych liter w grze
-                        Console.Write("\nLitery: ");
-                        for (int i = 0; i < litery.Length; i++)
-                        {
-                            if (litery[i] != null)
-                            {
-                                Console.Write("{0} ", litery[i]);
-                            }
-                            else
-                            {
-                                Console.WriteLine();
-                                break;
-                            }
-                        }
-
+                        
                         //Sprawdzenie ilości pozostałych prób gracza
                         if (--iloscProb == 0)
                         {
@@ -121,40 +128,37 @@ namespace WrednyWisielec
                     }
                     else //Brak słów spełniających warunek
                     {
+                        //Sprawdzenie ilości słów spełniających warunki
+                        iloscSlow = 0;
+                        for (int i = 0; i < slowa.Length; i++)
+                        {
+                            if (pozycjeWcześniejsze[i] == false)
+                            {
+                                iloscSlow++;
+                            }
+                        }
                         //Losowanie słowa do dalszej części gry
                         int losowaPozycja;
                         while (wybraneSlowo.Equals(string.Empty))
                         {
-                            losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(pozycjeObecne.Length);
-                            if (pozycjeObecne[losowaPozycja] == true)
+                            losowaPozycja = new Random((int)DateTime.Now.Ticks).Next(++iloscSlow);
+                            for(int i = 0; i < slowa.Length; i++)
                             {
-                                wybraneSlowo = slowa[losowaPozycja];
+                                if(pozycjeWcześniejsze[i] == false)
+                                {
+                                    if(--iloscSlow == 0)
+                                    {
+                                        wybraneSlowo = slowa[i];
+                                    }
+                                }
                             }
                         }
                     }
                 } //koniec I etapu
                 else //II etap
                 {
-                    //Wypisanie ile gracz posiada prób
-                    Console.Write("\nIlość żyć: {0}", iloscProb);
-
-                    //Wypisanie użytych liter w grze
-                    Console.Write("\nLitery: ");
-                    for (int i = 0; i < litery.Length; i++)
-                    {
-                        if (litery[i] != null)
-                        {
-                            Console.Write("{0} ", litery[i]);
-                        }
-                        else
-                        {
-                            Console.WriteLine();
-                            break;
-                        }
-                    }
-
                     //Wypisanie liter odgadniętych przez gracza w słowie
-                    Console.Write("Słowo: ");
+                    Console.Write("\nSłowo: ");
                     bool wszystkoOdgadnięte = true;
                     for (int i = 0; i < wybraneSlowo.Length; i++)
                     {
@@ -187,7 +191,7 @@ namespace WrednyWisielec
                         //Wybór litery przez gracza
                         do
                         {
-                            Console.Write("\nPodaj literę: ");
+                            Console.Write("\n\nPodaj literę: ");
                             litera = Console.ReadLine().ToLower();
                         } while (litera == "" || litera.Length > 1 || !(Char.IsLetter(litera, 0)));
 
