@@ -8,31 +8,38 @@ namespace WrednyWisielec
         static void Main(string[] args)
         {
             string[] slowa = File.ReadAllLines("../../slowa.txt");
-
-            int dlugoscSlowa = 2;
-            //słowa dwuliterowe
-            int i = 0;
+            int maksymalnaDlugoscSlowa = 0;
             foreach(string slowo in slowa)
             {
-                if(slowo.Length == dlugoscSlowa)
+                if(slowo.Length > maksymalnaDlugoscSlowa)
                 {
-                    i++;
+                    maksymalnaDlugoscSlowa = slowo.Length;
                 }
             }
-            string[] tmp = new string[i];
-            i = 0;
-            foreach (string slowo in slowa)
+
+            for(int dlugoscSlowa = 0; dlugoscSlowa < maksymalnaDlugoscSlowa; dlugoscSlowa++)
             {
-                if (slowo.Length == dlugoscSlowa)
+                int i = 0;
+                foreach (string slowo in slowa)
                 {
-                    tmp[i++] = slowo;
+                    if (slowo.Length == dlugoscSlowa)
+                    {
+                        i++;
+                    }
                 }
+                string[] tmp = new string[i];
+                i = 0;
+                foreach (string slowo in slowa)
+                {
+                    if (slowo.Length == dlugoscSlowa)
+                    {
+                        tmp[i++] = slowo;
+                    }
+                }
+                string path = "../../s" + dlugoscSlowa + ".txt";
+                File.WriteAllLines(path, tmp);
             }
-            foreach(string slowo in tmp)
-            {
-                Console.WriteLine(slowo);
-            }
-            //File.WriteAllLines("../../s2.txt", tmp);
+            
 
         } //Main End
     } //Class End
