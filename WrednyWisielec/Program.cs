@@ -111,6 +111,7 @@ namespace WrednyWisielec
                         //Sprawdzenie ilości pozostałych prób gracza
                         if (--iloscProb == 0)
                         {
+                            wybraneSlowo = slowa[new Random((int)DateTime.Now.Ticks).Next(slowa.Length)];
                             koniec = true;
                         }
                     }
